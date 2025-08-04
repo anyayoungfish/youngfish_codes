@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>С Днем Рождения, папа!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400&display=swap');
+    body {
+      margin: 0;
+      background: #1a1a2e;
+      color: #fff;
+      font-family: 'Montserrat', Arial, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    h1 {
+      font-size: 2.5em;
+      text-align: center;
+      margin-top: 35px;
+      background: linear-gradient(90deg,#fbff00,#f48c06,#ff006e,#8338ec,#3a86ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .section {
+      max-width: 620px;
+      margin: 24px auto 0 auto;
+      background: rgba(42, 49, 96, 0.96);
+      border-radius: 18px;
+      box-shadow: 0 4px 40px #0005;
+      padding: 24px 14px;
+    }
+    .engineer {
+      font-size: 1.2em;
+      text-align: center;
+      margin-bottom: 12px;
+      line-height: 1.7;
+    }
+
+    .gift-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin: 38px 0;
+      min-height: 180px;
+    }
+
+    /* ------ Подарочная коробка ------ */
+    .giftbox {
+      width: 120px;
+      height: 120px;
+      position: relative;
+      cursor: pointer;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      transition: transform .08s;
+    }
+    .giftbox:hover {
+      transform: scale(1.08);
+    }
+    .gift-lid {
+      width: 120px;
+      height: 40px;
+      background: #ff3562;
+      border-radius: 10px 10px 16px 16px/12px 12px 24px 24px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      transition: transform 0.7s cubic-bezier(.31,1.27,.92,1.05);
+      box-shadow: 0 3px 12px #bf153970;
+      border-bottom: 4px solid #ef0b32;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .gift-lid .ribbon{
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 20px; height: 40px;
+      background: #ffe066;
+      z-index: 3;
+      border-radius: 8px;
+    }
+    .gift-lid .bow {
+      position: absolute;
+      top: -18px; left: 50%;
+      width: 50px; height: 30px;
+      transform: translateX(-50%);
+      z-index: 4;
+      display: flex; justify-content: center; align-items: center;
+      pointer-events: none;
+    }
+    .bow-left, .bow-right {
+      width:23px; height:26px;
+      background: radial-gradient(circle at 30% 30%,#ffe066 85%,#ffd227 100%);
+      border-radius: 50% 80% 60% 60%;
+      display: inline-block;
+    }
+    .bow-left {
+      transform: rotate(-20deg) translateX(-4px);
+      margin-right: 2px;
+    }
+    .bow-right {
+      transform: rotate(20deg) translateX(4px) scaleX(-1);
+    }
+    .giftbox.opened .gift-lid {
+      transform: translateY(-60px) rotate(-8deg);
+    }
+
+    .gift-body {
+      width: 120px;
+      height: 80px;
+      background: #ff3562;
+      position: absolute;
+      bottom: 0; left: 0;
+      border-radius: 0 0 16px 16px;
+      box-shadow: 0 6px 24px #fd426470;
+      border-top: 4px solid #ef0b32;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .gift-body .stripe {
+      position: absolute;
+      left: 49px; top: 0;
+      width: 22px;
+      height: 100%;
+      background: #ffe066;
+      border-radius: 8px;
+      z-index: 4;
+    }
+    .gift-surprise {
+      position: absolute;
+      left: 50%; top: 16px;
+      transform: translateX(-50%);
+      width: 70px; height: 46px;
+      background: #fffefa;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px #eebb5080;
+      opacity: 0;
+      transition: opacity 1s .5s;
+      z-index: 5;
+      display: flex; justify-content: center; align-items: center;
+      font-size: 2rem;
+      color: #fff;
+      font-weight: bold;
+      pointer-events: none;
+      user-select: none;
+    }
+    .giftbox.opened .gift-surprise {
+      opacity: 1;
+      animation: surprise-pop 1s cubic-bezier(.5,1.8,.6,1.2) .4s 1 both;
+    }
+    @keyframes surprise-pop {
+      0% { transform: translateX(-50%) scale(0.2) translateY(20px); opacity: 0; }
+      80% { transform: translateX(-50%) scale(1.05) translateY(-12px); opacity: 1;}
+      100% { transform: translateX(-50%) scale(1) translateY(0px);}
+    }
+    .gift-caption {
+      text-align: center;
+      margin-top: 18px;
+      color: #fccc25;
+      font-size: 1.1em;
+      letter-spacing: .5px;
+    }
+
+    /* Блок с подарком */
+    #present {
+      display: none;
+      margin-top: 35px;
+      padding-top: 18px;
+      border-top: 1px solid #fff2;
+      animation: fadein .8s;
+      width: 100%;
+    }
+    @keyframes fadein {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .present-title {
+      color: #ffe66b;
+      text-align: center;
+      font-size: 1.3em;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    /* Карточки курсов */
+    #craft-courses {
+      font-family: inherit;
+      background: transparent;
+      padding: 18px 0 0 0;
+      color: #222;
+      margin: 0 auto;
+      max-width: 1200px;
+      margin-bottom: 10px;
+    }
+    #craft-courses h2 {
+      text-align: center;
+      margin-bottom: 22px;
+      background: linear-gradient(90deg, #ffe066, #ff3562, #36f6ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 1.25em;
+    }
+    .cards-flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+    .course-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 18px rgba(30,30,70,0.10);
+      width: 300px;
+      padding: 17px 14px 12px 14px;
+      font-size: 1em;
+      transition: transform .16s, box-shadow .16s;
+      margin-bottom: 7px;
+      color: #251b29;
+      border: 1px solid #f6e8e9;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .course-card:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 6px 24px rgba(70,80,140,0.18);
+    }
+    .course-card h3 {
+      margin-top: 0;
+      font-size: 1.11em;
+      color: #e64e85;
+      margin-bottom: .6em;
+      font-weight: 700;
+    }
+    .course-card a {
+      color: #2a77ca;
+      text-decoration: underline dotted;
+      font-weight: bold;
+      transition: color .2s;
+      word-break: break-word;
+    }
+    .course-card a:hover {
+      color: #ff3562;
+      text-decoration: underline wavy;
+    }
+    .course-card p {
+      margin: 7px 0;
+      font-size: 1em;
+    }
+
+    .final-text {
+      color: #4cc98a;
+      text-align: center;
+      margin-top: 18px;
+      font-size:1.02em;
+      font-weight: 600;
+    }
+    /* Responsive */
+    @media (max-width: 900px) {
+      .cards-flex {
+        gap: 10px;
+      }
+      .course-card { width: 98vw; max-width: 330px; font-size: 0.97em;}
+      #craft-courses { padding: 6px 3vw 0 3vw; }
+    }
+    @media (max-width: 700px) {
+      body { font-size: 0.95em; }
+      .section { padding: 11px 4vw;}
+      h1 { font-size: 1.2em; margin-top: 18px;}
+      .engineer { font-size: .97em;}
+      .giftbox { width: 74px; height: 74px;}
+      .gift-lid, .gift-body { width: 74px;}
+      .gift-lid { height: 18px;}
+      .gift-body { height: 40px;}
+      .gift-lid .ribbon { width: 7px; height: 18px;}
+      .gift-lid .bow { width: 21px; height: 13px;}
+      .bow-left, .bow-right { width: 9px; height: 9px;}
+      .gift-surprise { width: 27px; height: 13px; font-size: 1.05rem;}
+      #craft-courses h2 { font-size: .98em;}
+      .present-title { font-size: 1.05em; }
+    }
+    @media (max-width: 500px) {
+      .section {padding: 5px 1vw;}
+      .course-card {width: 99vw; max-width: 375px;}
+      #present {padding-top: 7px;}
+    }
+    /* Салют */
+    canvas#fireworks {
+      position: fixed;
+      z-index: 10;
+      left: 0;top: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      opacity: 0.99;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="fireworks"></canvas>
+  <h1>С Днем Рождения, папа!</h1>
+
+  <div class="section">
+    <div class="engineer">
+      Дорогой папа!<br>
+      Ты — настоящий мастер, умелец и инженер!<br>
+      Твои руки создают удивительные вещи,<br>
+      в каждом деле ты находишь смекалку и мастерство.<br>
+      Спасибо за твой талант, труд и вдохновение!
+    </div>
+  </div>
+
+  <div class="section gift-container">
+    <div class="giftbox" id="giftbox">
+      <div class="gift-lid">
+        <span class="ribbon"></span>
+        <div class="bow">
+          <span class="bow-left"></span>
+          <span class="bow-right"></span>
+        </div>
+      </div>
+      <div class="gift-body">
+        <span class="stripe"></span>
+      </div>
+      <div class="gift-surprise">🎁</div>
+    </div>
+    <div class="gift-caption">Кликни по коробке и открой свой подарок!</div>
+    <div id="present">
+      <div class="present-title">Папа, выбирай Подарок на свой вкус!</div>
+
+      <!-- Карточки курсов -->
+      <section id="craft-courses">
+        <h2>Курсы по деревообработке, реставрации мебели и кузнечному делу в Москве</h2>
+        <div class="cards-flex">
+          <!-- 1 -->
+          <div class="course-card">
+            <h3>Деревообработка</h3>
+            <p><strong><a href="https://academycrafts.ru/courses/derevo/kursy-stolyara/" target="_blank">Курсы столяра (AcademyCrafts)</a></strong></p>
+            <p>72 ак. часа, ручной инструмент.</p>
+          </div>
+          <!-- 2 -->
+          <div class="course-card">
+            <h3>Реставрация мебели</h3>
+            <p><strong><a href="https://academycrafts.ru/courses/restavratsiya-i-remont/kursy-restavratorov-mebeli/" target="_blank">Русская Академия Ремёсел</a></strong></p>
+            <p>Курс «Реставратор произведений из дерева». 250 ак. часов, 3–4 мес. Свидетельство о профессии.</p>
+          </div>
+          <!-- 3 -->
+          <div class="course-card">
+            <h3>Реставрация (интенсив)</h3>
+            <p><strong><a href="https://rubankov.ru/workshop/wood_classes/kurs-restavracija-staroj-mebeli/" target="_blank">Школа Rubankov</a></strong></p>
+            <p>Курс «Реставрация старой мебели». 4 дня (12 ч).</p>
+          </div>
+          <!-- 4 -->
+          <div class="course-card">
+            <h3>Кузнечное дело</h3>
+            <p><strong><a href="https://vc.ru/services/1990063-kuznechnoe-delo-v-moskve-luchshie-kursy-i-master-klassy" target="_blank">Пара Рук, Железный Лев, Кузнечный двор</a></strong></p>
+            <p>Основы ковки и художественная ковка. От 1 до 5 занятий.</p>
+          </div>
+          <!-- 5 -->
+          <div class="course-card">
+            <h3>Художественная ковка</h3>
+            <p><strong><a href="https://academycrafts.ru/courses/rabota-s-metallom/khudozhestvennaya-kovka/" target="_blank">AcademyCrafts</a></strong></p>
+            <p>Курс «Художественная ковка». 144 ак. ч, 4 готовых изделия, сертификат.</p>
+          </div>
+          <!-- 6 -->
+          <div class="course-card">
+            <h3>Интенсив на Флаконе</h3>
+            <p><strong><a href="https://xn--1-ntbin2a8e.xn--p1ai/education/" target="_blank">Центр на Флаконе</a></strong></p>
+            <p>Интенсив «Базовые техники ковки». 2 недели.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="final-text">
+        Выбирай любое или находи идеальное для себя, мы проспонсируем (почти) любую инициативу :)
+      </div>
+    </div>
+  </div>
+  <!-- Салют на canvas -->
+  <script>
+  // Fireworks Effect
+  const canvas = document.getElementById('fireworks');
+  const ctx = canvas.getContext('2d');
+  let W = window.innerWidth, H = window.innerHeight;
+  canvas.width = W;
+  canvas.height = H;
+  function randomColor() {
+    const c = ['#ffe066','#ff006e','#3a86ff','#8338ec','#fb5607','#06d6a0','#b6fffa'];
+    return c[Math.floor(Math.random() * c.length)];
+  }
+  let fireworks = [], particles = [];
+  function Firework() {
+    this.x = Math.random() * W * .9 + W * 0.05;
+    this.y = H;
+    this.targetY = H * (0.2 + Math.random() * 0.4);
+    this.targetX = this.x + (Math.random()-0.5)*120;
+    this.color = randomColor();
+    this.state = 0;
+    this.vy = - (6 + Math.random()*3);
+    this.vx = (Math.random()-0.5)*2;
+    this.exploded = false;
+    this.size = 2 + Math.random()*1.5;
+  }
+  Firework.prototype.update = function() {
+    if (!this.exploded) {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.vy += 0.07;
+      ctx.beginPath();
+      ctx.arc(this.x,this.y, this.size, 0, 2*Math.PI);
+      ctx.fillStyle = this.color;
+      ctx.fill();
+      if (this.vy >= 0 || this.y <= this.targetY) {
+        this.exploded = true;
+        let pCount = 24 + Math.floor(Math.random()*14);
+        for (let i=0;i<pCount;++i) {
+          let a = Math.random()*2*Math.PI;
+          let sp = 2 + Math.random()*2.9;
+          particles.push({
+            x: this.x, y:this.y,
+            vx: Math.cos(a)*sp,
+            vy: Math.sin(a)*sp,
+            alpha: 1,
+            color: this.color,
+            size: 1.5+Math.random()*2
+          });
+        }
+      }
+    }
+  };
+  function loop() {
+    ctx.globalAlpha = 0.15;
+    ctx.fillStyle = "#101032";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.globalAlpha = 1.0;
+    if (Math.random() < 0.065) {
+      fireworks.push(new Firework());
+    }
+    for (let i=0;i<fireworks.length;++i) {
+      fireworks[i].update();
+      if (fireworks[i].exploded) {
+        fireworks.splice(i,1); --i;
+      }
+    }
+    for (let i=0;i<particles.length;++i) {
+      let p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.018;
+      p.alpha *= 0.973;
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.size,0,2*Math.PI);
+      ctx.fillStyle = p.color;
+      ctx.shadowBlur=11;ctx.shadowColor=p.color;
+      ctx.fill();
+      ctx.restore();
+      if (p.alpha < 0.05) {
+        particles.splice(i,1); --i;
+      }
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
+  window.addEventListener('resize', ()=>{
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W; canvas.height = H;
+  });
+  </script>
+  <script>
+    // Gift box open logic
+    const giftbox = document.getElementById('giftbox');
+    const present = document.getElementById('present');
+    let opened = false;
+    giftbox.addEventListener('click', function() {
+      if(opened) return;
+      giftbox.classList.add('opened');
+      opened = true;
+      setTimeout(()=>{ present.style.display='block'; }, 800);
+    });
+  </script>
+</body>
+</html>
